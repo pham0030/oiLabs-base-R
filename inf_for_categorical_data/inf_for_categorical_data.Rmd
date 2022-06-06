@@ -25,18 +25,24 @@ categorical data.
 To access the press release for the poll, conducted by WIN-Gallup 
 International, click on the following link:
 
-*<http://www.wingia.com/web/files/richeditor/filemanager/Global_INDEX_of_Religiosity_and_Atheism_PR__6.pdf>*
+*<https://www.scribd.com/document/136318147/Win-gallup-International-Global-Index-of-Religiosity-and-Atheism-2012>*
 
 Take a moment to review the report then address the following questions.
 
 1.  In the first paragraph, several key findings are reported. Do these 
     percentages appear to be *sample statistics* (derived from the data 
     sample) or *population parameters*?
+    
+Answer: *sample statistics*
 
 2.  The title of the report is "Global Index of Religiosity and Atheism". To
     generalize the report's findings to the global human population, what must 
     we assume about the sampling method? Does that seem like a reasonable 
     assumption?
+    
+Answer: In order to generalize the report's findings to the global human population, 
+we must assume the sampling method is *random* and the observations are *independent*. 
+It seems a reasonable assumption if the survey is conduct correctly.
 
 ## The data
 
@@ -47,12 +53,17 @@ original data set of individual responses to the survey. Load this data
 set into R with the following command.
 
 ```{r head-data, eval=FALSE}
-download.file("http://www.openintro.org/stat/data/atheism.RData", destfile = "atheism.RData")
-load("atheism.RData")
+#download.file("http://www.openintro.org/stat/data/atheism.RData", destfile = "atheism.RData")
+#load("atheism.RData")
+
+load('~/inf_for_categorical_data/more/atheism.RData')
 ```
 
 3.  What does each row of Table 6 correspond to? What does each row of 
     `atheism` correspond to?
+    
+Answer: each row of Table 6 corresponds to proportions of each answer group by countries, each row of `atheism`
+corresponds to answers of each surveyed individuals
 
 To investigate the link between these two ways of organizing this data, take a 
 look at the estimated proportion of atheists in the United States. Towards 
@@ -66,7 +77,10 @@ the same number using the `atheism` data.
 
 ```{r us-atheism, eval=FALSE}
 us12 <- subset(atheism, nationality == "United States" & year == "2012")
+sum(us12$response=='atheist')/length(us12$response)
 ```
+
+Answer: proportion of atheist response is .0499 which agrees with the percentage in Table 6
 
 ## Inference on proportions
 
@@ -85,13 +99,17 @@ hypothesis test.
     interval for the proportion of atheists in the United States in 2012.
     Are you confident all conditions are met?
 
+Answer: The sample’s observations are independent, e.g. are from a simple random sample. 
+At least 10 successes and 10 failures in the sample: np = 50 > 10 and
+n(1 − p) = 952 ≥ 10, which satisfied the success-failure condition.
+
+
 If the conditions for inference are reasonable, we can either calculate
 the standard error and construct the interval by hand, or allow the `inference`
 function to do it for us.
 
 ```{r us-atheism-ci, eval=FALSE, tidy = FALSE}
-inference(us12$response, est = "proportion", type = "ci", method = "theoretical", 
-          success = "atheist")
+inference(us12$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
 ```
 
 Note that since the goal is to construct an interval estimate for a 
@@ -105,12 +123,28 @@ the error margin for surveys of this kind is $\pm$ 3-5% at 95% confidence".
 6.  Based on the R output, what is the margin of error for the estimate of the 
     proportion of the proportion of atheists in US in 2012?
 
+Answer: Standard error = 0.0069 with 95 % Confidence interval = ( 0.0364 , 0.0634 )
+
 7.  Using the `inference` function, calculate confidence intervals for the 
     proportion of atheists in 2012 in two other countries of your choice, and 
     report the associated margins of error. Be sure to note whether the 
     conditions for inference are met. It may be helpful to create new data 
     sets for each of the two countries first, and then use these data sets in 
     the `inference` function to construct the confidence intervals.
+
+```{r us-japan-ci, eval=FALSE, tidy = FALSE}
+jp12 <- subset(atheism, nationality == "Japan" & year == "2012")
+inference(jp12$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+```
+
+Answer: Japan: 95 % Confidence interval = ( 0.281 , 0.3329 )
+
+```{r us-france-ci, eval=FALSE, tidy = FALSE}
+fr12 <- subset(atheism, nationality == "France" & year == "2012")
+inference(fr12$response, est = "proportion", type="ci", method="theoretical", success="atheist")
+```
+
+Answer: France: 95 % Confidence interval = (0.2657 , 0.3089)
 
 ## How does the proportion affect the margin of error?
 
@@ -141,6 +175,9 @@ plot(me ~ p, ylab = "Margin of Error", xlab = "Population Proportion")
 ```
 
 8.  Describe the relationship between `p` and `me`.
+
+Answer: Margin of error increase from proportion of 0 to maximum at 
+proportion of 0.5 and decrease at proportion of 1.0 (half ellipse shape)
 
 ## Success-failure condition
 
@@ -190,6 +227,14 @@ distribution.
     *Hint:* Remember that R has functions such as `mean` to calculate summary
     statistics.
 
+```{r sampling-distrubution, eval=FALSE}
+mean(p_hats)
+sd(p_hats)
+```
+
+Answer: The sampling distribution of sample proportions is nearly normally distributed
+with mean of  0.0999 and standard deviation of 0.00931.
+
 10. Repeat the above simulation three more times but with modified sample
     sizes and proportions: for $n = 400$ and $p = 0.1$, $n = 1040$ and 
     $p = 0.02$, and $n = 400$ and $p = 0.02$. Plot all four histograms
@@ -198,6 +243,45 @@ distribution.
     larger two-by-two plot. Describe the three new sampling distributions. 
     Based on these limited plots, how does $n$ appear to affect the 
     distribution of $\hat{p}$? How does $p$ affect the sampling distribution?
+
+```{r sim-np-mutiple, eval=FALSE}
+p1 <- 0.1
+n1 <- 1040
+p_hats1 <- rep(0, 5000)
+
+for(i in 1:5000){
+  samp <- sample(c("atheist", "non_atheist"), n1, replace = TRUE, prob = c(p1, 1-p1))
+  p_hats1[i] <- sum(samp == "atheist")/n1
+}
+
+#hist(p_hats1, main = "p1 = 0.1, n1 = 1040", xlim = c(0, 0.18))
+
+n2 <- 400
+p_hats2 <- rep(0, 5000)
+for (i in 1:5000){
+  samp <- sample(c("atheist", "non_atheist"), n2, replace = TRUE, prob = c(p1, 1-p1))
+  p_hats2[i] <- sum(samp == "atheist")/n2
+}
+
+p2 <- 0.02
+p_hats3 <- rep(0, 5000)
+for(i in 1:5000){
+  samp <- sample(c("atheist", "non_atheist"), n1, replace = TRUE, prob = c(p2, 1-p2))
+  p_hats3[i] <- sum(samp == "atheist")/n1
+}
+
+p_hats4 <- rep(0, 5000)
+for (i in 1:5000){
+  samp <-sample(c("atheist", "non_atheist"), n2, replace = TRUE, prob = c(p2, 1-p2))
+  p_hats4[i] <- sum(samp == "atheist")/n2
+}
+
+par(mfrow = c(2, 2))
+hist(p_hats1, main = "p1 = 0.1, n1 = 1040", xlim = c(0, 0.18))
+hist(p_hats2, main = "p1 = 0.1, n2 = 400", xlim = c(0, 0.18))
+hist(p_hats3, main = "p2 = 0.02, n1 = 1040", xlim = c(0, 0.18))
+hist(p_hats4, main = "p2 = 0.02, n2 = 400", xlim = c(0, 0.18))
+```
 
 Once you're done, you can reset the layout of the plotting window by using the 
 command `par(mfrow = c(1, 1))` command or clicking on "Clear All" above the 
@@ -210,6 +294,10 @@ your previous plots.
     these point estimates are actually the truth. Then given the shape of 
     their respective sampling distributions, do you think it is sensible to 
     proceed with inference and report margin of errors, as the reports does?
+
+Answer: It is sensible for Australia. Ecuador's sampling 
+distribution is not exactly normally distributed, if `simulation based method` is used to inference
+in stead of `theoretical` then it is sensible otherwise it is not.
 
 * * *
 ## On your own
@@ -229,13 +317,43 @@ from 2005 and 2012 for 39 countries.
     confidence intervals for the true proportion of athiests in both
     years, and determine whether they overlap.
 
+```{r span-atheism-change, eval=FALSE}
+
+spain05 <- subset(atheism, nationality == "Spain" & year == "2005")
+spain12 <- subset(atheism, nationality == "Spain" & year == "2012")
+inference(spain05$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+inference(spain12$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+```
+
+Answer: 2005: 95 % Confidence interval = ( 0.083 , 0.1177 )
+        2012: 95 % Confidence interval = ( 0.0734 , 0.1065 )
+        as the confidence interval overlaps, it is concluded that the 
+        difference between groups is NOT statistically significant
+
+
     **b.** Is there convincing evidence that the United States has seen a
     change in its atheism index between 2005 and 2012?
+
+```{r us-atheism-change, eval=FALSE}
+
+us05 <- subset(atheism, nationality == "United States" & year == "2005")
+us12 <- subset(atheism, nationality == "United States" & year == "2012")
+inference(us05$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+inference(us12$response, est = "proportion", type = "ci", method = "theoretical", success = "atheist")
+```
+
+Answer: 2005: 95 % Confidence interval = ( 0.0038 , 0.0161 )
+        2012: 95 % Confidence interval = ( 0.0364 , 0.0634 )
+        as the confidence interval does NOT overlap, it is concluded that the 
+        difference between groups IS statistically significant
 
 -   If in fact there has been no change in the atheism index in the countries 
     listed in Table 4, in how many of those countries would you expect to 
     detect a change (at a significance level of 0.05) simply by chance?\
     *Hint:* Look in the textbook index under Type 1 error.
+
+Answer: 0.05 * 39 = 1.95 ~ 1 or 2 countries detect a change simply by chance 
+at significance level of 0.05
 
 -   Suppose you're hired by the local government to estimate the proportion of 
     residents that attend a religious service on a weekly basis. According to 
@@ -246,6 +364,9 @@ from 2005 and 2012 for 39 countries.
     *Hint:* Refer to your plot of the relationship between $p$ and margin of 
     error. Do not use the data set to answer this question.
 
+Answer: at 95% CI: $ME = 1.96\times SE = 1.96\times\sqrt{p(1-p)/n} =0.01$.
+Worst estimate of $p = 0.5$ ~ flipping coin. 
+Solve for $n = 1.96^2\times0.5^2/0.01^2 = 9604$. At least 9604 people !
 
 <div id="license">
 This is a product of OpenIntro that is released under a [Creative Commons 

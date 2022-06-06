@@ -1,0 +1,475 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Inference for categorical data},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Inference for categorical data}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+In August of 2012, news outlets ranging from the
+\href{http://www.washingtonpost.com/national/on-faith/poll-shows-atheism-on-the-rise-in-the-us/2012/08/13/90020fd6-e57d-11e1-9739-eef99c5fb285_story.html}{Washington
+Post} to the
+\href{http://www.huffingtonpost.com/2012/08/14/atheism-rise-religiosity-decline-in-america_n_1777031.html}{Huffington
+Post} ran a story about the rise of atheism in America. The source for
+the story was a poll that asked people, ``Irrespective of whether you
+attend a place of worship or not, would you say you are a religious
+person, not a religious person or a convinced atheist?'' This type of
+question, which asks people to classify themselves in one way or
+another, is common in polling and generates categorical data. In this
+lab we take a look at the atheism survey and explore what's at play when
+making inference about population proportions using categorical data.
+
+\hypertarget{the-survey}{%
+\subsection{The survey}\label{the-survey}}
+
+To access the press release for the poll, conducted by WIN-Gallup
+International, click on the following link:
+
+\emph{\url{https://www.scribd.com/document/136318147/Win-gallup-International-Global-Index-of-Religiosity-and-Atheism-2012}}
+
+Take a moment to review the report then address the following questions.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  In the first paragraph, several key findings are reported. Do these
+  percentages appear to be \emph{sample statistics} (derived from the
+  data sample) or \emph{population parameters}?
+\end{enumerate}
+
+Answer: \emph{sample statistics}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  The title of the report is ``Global Index of Religiosity and
+  Atheism''. To generalize the report's findings to the global human
+  population, what must we assume about the sampling method? Does that
+  seem like a reasonable assumption?
+\end{enumerate}
+
+Answer: In order to generalize the report's findings to the global human
+population, we must assume the sampling method is \emph{random} and the
+observations are \emph{independent}. It seems a reasonable assumption if
+the survey is conduct correctly.
+
+\hypertarget{the-data}{%
+\subsection{The data}\label{the-data}}
+
+Turn your attention to Table 6 (pages 15 and 16), which reports the
+sample size and response percentages for all 57 countries. While this is
+a useful format to summarize the data, we will base our analysis on the
+original data set of individual responses to the survey. Load this data
+set into R with the following command.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#download.file("http://www.openintro.org/stat/data/atheism.RData", destfile = "atheism.RData")}
+\CommentTok{\#load("atheism.RData")}
+
+\FunctionTok{load}\NormalTok{(}\StringTok{\textquotesingle{}\textasciitilde{}/inf\_for\_categorical\_data/more/atheism.RData\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  What does each row of Table 6 correspond to? What does each row of
+  \texttt{atheism} correspond to?
+\end{enumerate}
+
+Answer: each row of Table 6 corresponds to proportions of each answer
+group by countries, each row of \texttt{atheism} corresponds to answers
+of each surveyed individuals
+
+To investigate the link between these two ways of organizing this data,
+take a look at the estimated proportion of atheists in the United
+States. Towards the bottom of Table 6, we see that this is 5\%. We
+should be able to come to the same number using the \texttt{atheism}
+data.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Using the command below, create a new dataframe called \texttt{us12}
+  that contains only the rows in \texttt{atheism} associated with
+  respondents to the 2012 survey from the United States. Next, calculate
+  the proportion of atheist responses. Does it agree with the percentage
+  in Table 6? If not, why?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{us12 }\OtherTok{\textless{}{-}} \FunctionTok{subset}\NormalTok{(atheism, nationality }\SpecialCharTok{==} \StringTok{"United States"} \SpecialCharTok{\&}\NormalTok{ year }\SpecialCharTok{==} \StringTok{"2012"}\NormalTok{)}
+\FunctionTok{sum}\NormalTok{(us12}\SpecialCharTok{$}\NormalTok{response}\SpecialCharTok{==}\StringTok{\textquotesingle{}atheist\textquotesingle{}}\NormalTok{)}\SpecialCharTok{/}\FunctionTok{length}\NormalTok{(us12}\SpecialCharTok{$}\NormalTok{response)}
+\end{Highlighting}
+\end{Shaded}
+
+Answer: proportion of atheist response is .0499 which agrees with the
+percentage in Table 6
+
+\hypertarget{inference-on-proportions}{%
+\subsection{Inference on proportions}\label{inference-on-proportions}}
+
+As was hinted at in Exercise 1, Table 6 provides \emph{statistics}, that
+is, calculations made from the sample of 51,927 people. What we'd like,
+though, is insight into the population \emph{parameters}. You answer the
+question, ``What proportion of people in your sample reported being
+atheists?'' with a statistic; while the question ``What proportion of
+people on earth would report being atheists'' is answered with an
+estimate of the parameter.
+
+The inferential tools for estimating population proportion are analogous
+to those used for means in the last chapter: the confidence interval and
+the hypothesis test.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Write out the conditions for inference to construct a 95\% confidence
+  interval for the proportion of atheists in the United States in 2012.
+  Are you confident all conditions are met?
+\end{enumerate}
+
+Answer: The sample's observations are independent, e.g.~are from a
+simple random sample. At least 10 successes and 10 failures in the
+sample: np = 50 \textgreater{} 10 and n(1 − p) = 952 ≥ 10, which
+satisfied the success-failure condition.
+
+If the conditions for inference are reasonable, we can either calculate
+the standard error and construct the interval by hand, or allow the
+\texttt{inference} function to do it for us.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{inference}\NormalTok{(us12}\SpecialCharTok{$}\NormalTok{response, }\AttributeTok{est =} \StringTok{"proportion"}\NormalTok{, }\AttributeTok{type =} \StringTok{"ci"}\NormalTok{, }\AttributeTok{method =} \StringTok{"theoretical"}\NormalTok{, }\AttributeTok{success =} \StringTok{"atheist"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Note that since the goal is to construct an interval estimate for a
+proportion, it's necessary to specify what constitutes a ``success'',
+which here is a response of \texttt{"atheist"}.
+
+Although formal confidence intervals and hypothesis tests don't show up
+in the report, suggestions of inference appear at the bottom of page 7:
+``In general, the error margin for surveys of this kind is \(\pm\) 3-5\%
+at 95\% confidence''.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Based on the R output, what is the margin of error for the estimate of
+  the proportion of the proportion of atheists in US in 2012?
+\end{enumerate}
+
+Answer: Standard error = 0.0069 with 95 \% Confidence interval = (
+0.0364 , 0.0634 )
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{6}
+\tightlist
+\item
+  Using the \texttt{inference} function, calculate confidence intervals
+  for the proportion of atheists in 2012 in two other countries of your
+  choice, and report the associated margins of error. Be sure to note
+  whether the conditions for inference are met. It may be helpful to
+  create new data sets for each of the two countries first, and then use
+  these data sets in the \texttt{inference} function to construct the
+  confidence intervals.
+\end{enumerate}
+
+\hypertarget{how-does-the-proportion-affect-the-margin-of-error}{%
+\subsection{How does the proportion affect the margin of
+error?}\label{how-does-the-proportion-affect-the-margin-of-error}}
+
+Imagine you've set out to survey 1000 people on two questions: are you
+female? and are you left-handed? Since both of these sample proportions
+were calculated from the same sample size, they should have the same
+margin of error, right? Wrong! While the margin of error does change
+with sample size, it is also affected by the proportion.
+
+Think back to the formula for the standard error:
+\(SE = \sqrt{p(1-p)/n}\). This is then used in the formula for the
+margin of error for a 95\% confidence interval:
+\(ME = 1.96\times SE = 1.96\times\sqrt{p(1-p)/n}\). Since the population
+proportion \(p\) is in this \(ME\) formula, it should make sense that
+the margin of error is in some way dependent on the population
+proportion. We can visualize this relationship by creating a plot of
+\(ME\) vs.~\(p\).
+
+The first step is to make a vector \texttt{p} that is a sequence from 0
+to 1 with each number separated by 0.01. We can then create a vector of
+the margin of error (\texttt{me}) associated with each of these values
+of \texttt{p} using the familiar approximate formula
+(\(ME = 2 \times SE\)). Lastly, we plot the two vectors against each
+other to reveal their relationship.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{1000}
+\NormalTok{p }\OtherTok{\textless{}{-}} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\FloatTok{0.01}\NormalTok{)}
+\NormalTok{me }\OtherTok{\textless{}{-}} \DecValTok{2} \SpecialCharTok{*} \FunctionTok{sqrt}\NormalTok{(p }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ p)}\SpecialCharTok{/}\NormalTok{n)}
+\FunctionTok{plot}\NormalTok{(me }\SpecialCharTok{\textasciitilde{}}\NormalTok{ p, }\AttributeTok{ylab =} \StringTok{"Margin of Error"}\NormalTok{, }\AttributeTok{xlab =} \StringTok{"Population Proportion"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{7}
+\tightlist
+\item
+  Describe the relationship between \texttt{p} and \texttt{me}.
+\end{enumerate}
+
+\hypertarget{success-failure-condition}{%
+\subsection{Success-failure condition}\label{success-failure-condition}}
+
+The textbook emphasizes that you must always check conditions before
+making inference. For inference on proportions, the sample proportion
+can be assumed to be nearly normal if it is based upon a random sample
+of independent observations and if both \(np \geq 10\) and
+\(n(1 - p) \geq 10\). This rule of thumb is easy enough to follow, but
+it makes one wonder: what's so special about the number 10?
+
+The short answer is: nothing. You could argue that we would be fine with
+9 or that we really should be using 11. What is the ``best'' value for
+such a rule of thumb is, at least to some degree, arbitrary. However,
+when \(np\) and \(n(1-p)\) reaches 10 the sampling distribution is
+sufficiently normal to use confidence intervals and hypothesis tests
+that are based on that approximation.
+
+We can investigate the interplay between \(n\) and \(p\) and the shape
+of the sampling distribution by using simulations. To start off, we
+simulate the process of drawing 5000 samples of size 1040 from a
+population with a true atheist proportion of 0.1. For each of the 5000
+samples we compute \(\hat{p}\) and then plot a histogram to visualize
+their distribution.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p }\OtherTok{\textless{}{-}} \FloatTok{0.1}
+\NormalTok{n }\OtherTok{\textless{}{-}} \DecValTok{1040}
+\NormalTok{p\_hats }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{5000}\NormalTok{)}
+
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\DecValTok{5000}\NormalTok{)\{}
+\NormalTok{  samp }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"atheist"}\NormalTok{, }\StringTok{"non\_atheist"}\NormalTok{), n, }\AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{prob =} \FunctionTok{c}\NormalTok{(p, }\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{p))}
+\NormalTok{  p\_hats[i] }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(samp }\SpecialCharTok{==} \StringTok{"atheist"}\NormalTok{)}\SpecialCharTok{/}\NormalTok{n}
+\NormalTok{\}}
+
+\FunctionTok{hist}\NormalTok{(p\_hats, }\AttributeTok{main =} \StringTok{"p = 0.1, n = 1040"}\NormalTok{, }\AttributeTok{xlim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.18}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+These commands build up the sampling distribution of \(\hat{p}\) using
+the familiar \texttt{for} loop. You can read the sampling procedure for
+the first line of code inside the \texttt{for} loop as, ``take a sample
+of size \(n\) with replacement from the choices of atheist and
+non-atheist with probabilities \(p\) and \(1 - p\), respectively.'' The
+second line in the loop says, ``calculate the proportion of atheists in
+this sample and record this value.'' The loop allows us to repeat this
+process 5,000 times to build a good representation of the sampling
+distribution.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{8}
+\item
+  Describe the sampling distribution of sample proportions at
+  \(n = 1040\) and \(p = 0.1\). Be sure to note the center, spread, and
+  shape.\\
+  \emph{Hint:} Remember that R has functions such as \texttt{mean} to
+  calculate summary statistics.
+\item
+  Repeat the above simulation three more times but with modified sample
+  sizes and proportions: for \(n = 400\) and \(p = 0.1\), \(n = 1040\)
+  and \(p = 0.02\), and \(n = 400\) and \(p = 0.02\). Plot all four
+  histograms together by running the \texttt{par(mfrow\ =\ c(2,\ 2))}
+  command before creating the histograms. You may need to expand the
+  plot window to accommodate the larger two-by-two plot. Describe the
+  three new sampling distributions. Based on these limited plots, how
+  does \(n\) appear to affect the distribution of \(\hat{p}\)? How does
+  \(p\) affect the sampling distribution?
+\end{enumerate}
+
+Once you're done, you can reset the layout of the plotting window by
+using the command \texttt{par(mfrow\ =\ c(1,\ 1))} command or clicking
+on ``Clear All'' above the plotting window (if using RStudio). Note that
+the latter will get rid of all your previous plots.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{10}
+\tightlist
+\item
+  If you refer to Table 6, you'll find that Australia has a sample
+  proportion of 0.1 on a sample size of 1040, and that Ecuador has a
+  sample proportion of 0.02 on 400 subjects. Let's suppose for this
+  exercise that these point estimates are actually the truth. Then given
+  the shape of their respective sampling distributions, do you think it
+  is sensible to proceed with inference and report margin of errors, as
+  the reports does?
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{on-your-own}{%
+\subsection{On your own}\label{on-your-own}}
+
+The question of atheism was asked by WIN-Gallup International in a
+similar survey that was conducted in 2005. (We assume here that sample
+sizes have remained the same.) Table 4 on page 13 of the report
+summarizes survey results from 2005 and 2012 for 39 countries.
+
+\begin{itemize}
+\item
+  Answer the following two questions using the \texttt{inference}
+  function. As always, write out the hypotheses for any tests you
+  conduct and outline the status of the conditions for inference.
+
+  \textbf{a.} Is there convincing evidence that Spain has seen a change
+  in its atheism index between 2005 and 2012?\\
+  \emph{Hint:} Create a new data set for respondents from Spain. Form
+  confidence intervals for the true proportion of athiests in both
+  years, and determine whether they overlap.
+
+  \textbf{b.} Is there convincing evidence that the United States has
+  seen a change in its atheism index between 2005 and 2012?
+\item
+  If in fact there has been no change in the atheism index in the
+  countries listed in Table 4, in how many of those countries would you
+  expect to detect a change (at a significance level of 0.05) simply by
+  chance?\\
+  \emph{Hint:} Look in the textbook index under Type 1 error.
+\item
+  Suppose you're hired by the local government to estimate the
+  proportion of residents that attend a religious service on a weekly
+  basis. According to the guidelines, the estimate must have a margin of
+  error no greater than 1\% with 95\% confidence. You have no idea what
+  to expect for \(p\). How many people would you have to sample to
+  ensure that you are within the guidelines?\\
+  \emph{Hint:} Refer to your plot of the relationship between \(p\) and
+  margin of error. Do not use the data set to answer this question.
+\end{itemize}
+
+\leavevmode\vadjust pre{\hypertarget{license}{}}%
+This is a product of OpenIntro that is released under a
+\href{http://creativecommons.org/licenses/by-sa/3.0}{Creative Commons
+Attribution-ShareAlike 3.0 Unported}. This lab was written for OpenIntro
+by Andrew Bray and Mine Çetinkaya-Rundel.
+
+\end{document}

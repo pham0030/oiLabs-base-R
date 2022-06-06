@@ -24,7 +24,7 @@ population looks like.
 In the previous lab, ``Sampling Distributions'', we looked at the population data
 of houses from Ames, Iowa. Let's start by loading that data set.
 
-```{r load-data, eval=FALSE}
+```{r load-data, eval=TRUE}
 download.file("http://www.openintro.org/stat/data/ames.RData", destfile = "ames.RData")
 load("ames.RData")
 ```
@@ -35,7 +35,7 @@ the data set has information on many housing variables, but for the first
 portion of the lab we'll focus on the size of the house, represented by the 
 variable `Gr.Liv.Area`.
 
-```{r sample, eval=FALSE}
+```{r sample, eval=TRUE}
 population <- ames$Gr.Liv.Area
 samp <- sample(population, 60)
 ```
@@ -44,8 +44,15 @@ samp <- sample(population, 60)
 "typical" size within your sample? Also state precisely what you interpreted 
 "typical" to mean.
 
+```{r samp-distribute, eval=FALSE}
+hist(samp)
+```
+
+
 2.  Would you expect another student's distribution to be identical to yours? 
 Would you expect it to be similar? Why or why not?
+
+Answer: Not exactly, but the distribution is somewhat similar
 
 ## Confidence intervals
 
@@ -85,6 +92,21 @@ There are a few conditions that must be met for this interval to be valid.
 distributed and have standard error $s / \sqrt{n}$. What conditions must be 
 met for this to be true?
 
+Answer: Independence. The sample observations must be independent, The most common way to satisfy
+this condition is when the sample is a simple random sample from the population. If the
+data come from a random process, analogous to rolling a die, this would also satisfy the
+independence condition.
+Normality. When a sample is small, we also require that the sample observations come from a
+normally distributed population. We can relax this condition more and more for larger and
+larger sample sizes. This condition is obviously vague, making it difficult to evaluate, so next
+we introduce a couple rules of thumb to make checking this condition easier. 
+n < 30: If the sample size n is less than 30 and there are no clear outliers in the data, then we
+typically assume the data come from a nearly normal distribution to satisfy the condition.
+n ≥ 30: If the sample size n is at least 30 and there are no particularly extreme outliers, then
+we typically assume the sampling distribution of ¯x is nearly normal, even if the underlying
+distribution of individual observations is not.
+
+
 ## Confidence levels
 
 4.  What does "95% confidence" mean? If you're not sure, see Section 4.2.2.
@@ -97,9 +119,14 @@ following command:
 mean(population)
 ```
 
+Answer: 95% of the time, when the confidence interval constructed this way will
+contain the true population means
+
 5.  Does your confidence interval capture the true average size of houses in 
 Ames? If you are working on this lab in a classroom, does your neighbor's 
 interval capture this value? 
+
+Answer: Yes, it captured the population mean this time.
 
 6.  Each student in your class should have gotten a slightly different 
 confidence interval. What proportion of those intervals would you expect to 
@@ -107,6 +134,8 @@ capture the true population mean? Why? If you are working in this lab in a
 classroom, collect data on the intervals created by other students in the 
 class and calculate the proportion of intervals that capture the true 
 population mean.
+
+Answer: 95% of the time !
 
 Using R, we're going to recreate many samples to learn more about how sample 
 means and confidence intervals vary from one sample to another. *Loops* come 
@@ -124,7 +153,7 @@ But before we do all of this, we need to first create empty vectors where we
 can save the means and standard deviations that will be calculated from each 
 sample. And while we're at it, let's also store the desired sample size as `n`.
 
-```{r set-up, eval=FALSE}
+```{r set-up, eval=TRUE}
 samp_mean <- rep(NA, 50)
 samp_sd <- rep(NA, 50)
 n <- 60
@@ -132,7 +161,7 @@ n <- 60
 
 Now we're ready for the loop where we calculate the means and standard deviations of 50 random samples.
 
-```{r loop, eval=FALSE, tidy = FALSE}
+```{r loop, eval=TRUE, tidy = FALSE}
 for(i in 1:50){
   samp <- sample(population, n) # obtain a sample of size n = 60 from the population
   samp_mean[i] <- mean(samp)    # save sample mean in ith element of samp_mean
@@ -142,7 +171,7 @@ for(i in 1:50){
 
 Lastly, we construct the confidence intervals.
 
-```{r ci50, eval=FALSE}
+```{r ci50, eval=TRUE}
 lower_vector <- samp_mean - 1.96 * samp_sd / sqrt(n) 
 upper_vector <- samp_mean + 1.96 * samp_sd / sqrt(n)
 ```
@@ -150,7 +179,7 @@ upper_vector <- samp_mean + 1.96 * samp_sd / sqrt(n)
 Lower bounds of these 50 confidence intervals are stored in `lower_vector`, 
 and the upper bounds are in `upper_vector`. Let's view the first interval.
 
-```{r first-interval, eval=FALSE}
+```{r first-interval, eval=TRUE}
 c(lower_vector[1], upper_vector[1])
 ```
 
@@ -163,12 +192,15 @@ c(lower_vector[1], upper_vector[1])
     the true population mean? Is this proportion exactly equal to the 
     confidence level? If not, explain why.
 
-    ```{r plot-ci, eval=FALSE}
+    ```{r plot-ci, eval=TRUE}
     plot_ci(lower_vector, upper_vector, mean(population))
     ```
 
 -   Pick a confidence level of your choosing, provided it is not 95%. What is 
     the appropriate critical value?
+    
+Answer: CI 90% with critical value of 0.1    
+
 
 -   Calculate 50 confidence intervals at the confidence level you chose in the 
     previous question. You do not need to obtain new samples, simply calculate 
@@ -177,6 +209,12 @@ c(lower_vector[1], upper_vector[1])
     calculate the proportion of intervals that include the true population 
     mean. How does this percentage compare to the confidence level selected for
     the intervals?
+    
+```{r ci-090, eval=TRUE}
+lower_vector <- samp_mean - 1.644854 * samp_sd / sqrt(n) 
+upper_vector <- samp_mean + 1.644854 * samp_sd / sqrt(n)
+plot_ci(lower_vector, upper_vector, mean(population))
+```  
 
 <div id="license">
 This is a product of OpenIntro that is released under a [Creative Commons 

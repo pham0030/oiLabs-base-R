@@ -35,7 +35,7 @@ work with a small subset.
 We begin by loading the data set of 20,000 observations into the R workspace. 
 After launching RStudio, enter the following command.
 
-```{r load-data, eval=FALSE}
+```{r load-data, eval=TRUE}
 source("http://www.openintro.org/stat/data/cdc.R")
 ```
 
@@ -106,7 +106,7 @@ from the summary command above and then enter
 R also has built-in functions to compute summary statistics one by one.  For 
 instance, to calculate the mean, median, and variance of `weight`, type 
 
-```{r weight-mean-var-median, eval=FALSE}
+```{r weight-mean-var-median, eval=TRUE}
 mean(cdc$weight) 
 var(cdc$weight)
 median(cdc$weight)
@@ -145,7 +145,7 @@ immediately applied the graphical function, `barplot`. This is an important
 idea: R commands can be nested. You could also break this into two steps by 
 typing the following:
 
-```{r table-smoke-barplot-twosteps, eval=FALSE}
+```{r table-smoke-barplot-twosteps, eval=TRUE}
 smoke <- table(cdc$smoke100)
 
 barplot(smoke)
@@ -162,6 +162,18 @@ another important idea that we'll return to later.
     `gender` and `exerany`. How many males are in the sample? What proportion of
     the sample reports being in excellent health?
 
+``` {r male-summary, eval=FALSE}
+summary(cdc$height)
+summary(cdc$age)
+IQR(cdc$height)
+IQR(cdc$age)
+table(cdc$gender)
+table(cdc$exerany)
+sum(cdc$genhlth == "excellent")/dim(cdc)[1]
+```
+
+Answer: Proportion of the sample reports being in excellent health: 0.23285
+
 The `table` command can be used to tabulate any number of variables that you 
 provide.  For example, to examine which participants have smoked across each 
 gender, we could use the following.
@@ -174,7 +186,7 @@ Here, we see column labels of 0 and 1. Recall that 1 indicates a respondent has
 smoked at least 100 cigarettes. The rows refer to gender. To create a mosaic 
 plot of this table, we would enter the following command.
 
-```{r mosaic-smoke-gender, eval=FALSE}
+```{r mosaic-smoke-gender, eval=TRUE}
 mosaicplot(table(cdc$gender,cdc$smoke100))
 ```
 
@@ -182,6 +194,8 @@ We could have accomplished this in two steps by saving the table in one line and
 applying `mosaicplot` in the next (see the table/barplot example above).
 
 3.  What does the mosaic plot reveal about smoking habits and gender?
+
+Answer: Male is more likely to be smoker than female
 
 ## Interlude: How R thinks about data
 
@@ -333,10 +347,16 @@ group is hard to say, but right now the mechanics of this are the important
 thing). In principle, you may use as many "and" and "or" clauses as you like 
 when forming a subset.
 
-3.  Create a new object called `under23_and_smoke` that contains all observations 
+4.  Create a new object called `under23_and_smoke` that contains all observations 
     of respondents under the age of 23 that have smoked 100 cigarettes in their 
     lifetime. Write the command you used to create the new object as the answer
     to this exercise.
+
+```{r under-23-smoke, eval=FALSE}
+
+under23_and_smoke <- subset(cdc, age < 23 & smoke100=="1")
+
+```
 
 ## Quantitative data
 
@@ -384,7 +404,7 @@ kilograms) to imperial (inches and pounds).
 The following two lines first make a new object called `bmi` and then creates 
 box plots of these values, defining groups by the variable `cdc$genhlth`.
 
-```{r boxplot-bmi, eval=FALSE}
+```{r boxplot-bmi, eval=TRUE}
 bmi <- (cdc$weight / cdc$height^2) * 703
 boxplot(bmi ~ cdc$genhlth)
 ```
@@ -396,10 +416,14 @@ multiply by 703. The result is 20,000 BMI values, one for each respondent. This
 is one reason why we like R: it lets us perform computations like this using 
 very simple expressions.
 
-4.  What does this box plot show? Pick another categorical variable from the 
+5.  What does this box plot show? Pick another categorical variable from the 
     data set and see how it relates to BMI. List the variable you chose, why you
     might think it would have a relationship to BMI,  and indicate what the 
     figure seems to suggest. 
+
+```{r boxplot-bmi-smoke, eval=TRUE}
+boxplot(bmi ~ cdc$smoke100)
+```
 
 Finally, let's make some histograms. We can look at the histogram for the age of
 our respondents with the command

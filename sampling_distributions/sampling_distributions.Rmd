@@ -49,6 +49,8 @@ hist(area)
 
 1.  Describe this population distribution.
 
+Answer: right skewed distribution.
+
 ## The unknown sampling distribution
 
 In this lab we have access to the entire population, but this is rarely the 
@@ -76,6 +78,7 @@ If we're interested in estimating the average living area in homes in Ames
 using the sample, our best single guess is the sample mean.
 
 ```{r mean-samp1, eval=FALSE}
+hist(samp1)
 mean(samp1)
 ```
 
@@ -89,6 +92,23 @@ population.
     mean of `samp2` compare with the mean of `samp1`?  Suppose we took two 
     more samples, one of size 100 and one of size 1000. Which would you think 
     would provide a more accurate estimate of the population mean?
+
+```{r mean-samp-more, eval=FALSE}
+samp2 <- sample(area, 50)
+hist(samp2)
+mean(samp2)
+```
+
+```{r mean-samp-more-2, eval=FALSE}
+samp3 <- sample(area, 100)
+hist(samp3)
+mean(samp3)
+
+samp4 <- sample(area, 1000)
+hist(samp4)
+mean(samp4)
+
+```
 
 Not surprisingly, every time we take another random sample, we get a different 
 sample mean.  It's useful to get a sense of just how much variability we 
@@ -125,6 +145,9 @@ the mean of each sample, and store each result in a vector called
     distribution, and be sure to specifically note its center.  Would you 
     expect the distribution to change if we instead collected 50,000 sample 
     means?
+
+Answer: normally distributed centered at population means, the distribution
+becomes more normally distributed
 
 ## Interlude: The `for` loop
 
@@ -292,6 +315,22 @@ Ames.  Now you'll try to estimate the mean home price.
 -   Of the sampling distributions from 2 and 3, which has a smaller spread?  If
     we're concerned with making estimates that are more often close to the 
     true value, would we prefer a distribution with a large or small spread?
+    
+```{r samp-50-150, eval=FALSE}
+sample_means50 <- rep(NA, 5000)
+sample_means150 <- rep(NA, 5000)
+
+for(i in 1:5000){
+  samp <- sample(price, 50)
+  sample_means50[i] <- mean(samp)
+  samp <- sample(price, 150)
+  sample_means150[i] <- mean(samp)
+}
+
+hist(sample_means50)
+hist(sample_means150)
+```
+Answer: `sample_means150` has smaller spread
 
 <div id="license">
 This is a product of OpenIntro that is released under a [Creative Commons 
